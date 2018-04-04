@@ -7,6 +7,7 @@ import { MatButtonModule, MatCheckboxModule, MatDatepickerModule, MatFormFieldMo
   MatCardModule, MatIconModule, MatProgressSpinnerModule, MatDialogModule } from '@angular/material';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import 'hammerjs';
 
@@ -47,7 +48,8 @@ import { LoginComponent } from './login/login.component';
     MatCardModule, MatIconModule, MatProgressSpinnerModule, MatDialogModule,
     FlexLayoutModule,
     AppRoutingModule,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [ DishService, PromotionService, LeaderService ],
   entryComponents: [
