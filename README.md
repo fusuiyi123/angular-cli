@@ -1,6 +1,6 @@
 # ConFusion
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.7.3.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.7.3. It is course work from `Front-End JavaScript Frameworks: Angular - The Hong Kong University of Science and Technology`
 
 ## Development server
 
