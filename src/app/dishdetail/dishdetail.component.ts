@@ -22,8 +22,10 @@ export class DishdetailComponent implements OnInit {
   prev: number;
   next: number;
 
+
   commentForm: FormGroup;
   comment: Comment;
+  originLength: number; // rember the comment length
 
   formErrors = {
     'author': '',
@@ -51,7 +53,7 @@ export class DishdetailComponent implements OnInit {
 
     this.route.params
       .switchMap((params: Params) => this.dishService.getDish(+params['id']))
-      .subscribe(dish => { this.dish = dish; this.setPrevNext(dish.id) });
+      .subscribe(dish => { this.dish = dish; this.setPrevNext(dish.id); this.originLength = dish.comments.length; });
 
   }
 
@@ -81,8 +83,17 @@ export class DishdetailComponent implements OnInit {
   }
 
   onValueChanged(data?: any) {
+
     if (!this.commentForm) { return; }
     const form = this.commentForm;
+
+    if (this.commentForm.valid) {
+      this.comment = this.commentForm.value;
+      if (this.dish.comments.length > this.originLength)
+        this.dish.comments[this.originLength] = this.comment;
+      else
+        this.dish.comments.push(this.comment);
+    }
 
     for (const field in this.formErrors) {
       // clear previous error message (if any)
@@ -99,11 +110,16 @@ export class DishdetailComponent implements OnInit {
 
   onSubmit() {
     this.comment = this.commentForm.value;
+    this.comment['date'] = Date.now().toString();
+    this.dish.comments.push(this.comment);
+    this.originLength += 1;
     this.commentForm.reset({
       author: '',
       rating: 5,
       comment: ''
     });
+    this.dish.comments.pop(); // delete the extra one triggered with onValueChanged. Is there a better way?
+
   }
 
 }
