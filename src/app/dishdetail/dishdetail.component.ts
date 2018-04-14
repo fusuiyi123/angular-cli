@@ -21,11 +21,10 @@ export class DishdetailComponent implements OnInit {
   dishIds: number[];
   prev: number;
   next: number;
-
+  errMess: string;
 
   commentForm: FormGroup;
   comment: Comment;
-  originLength: number; // rember the comment length
 
   formErrors = {
     'author': '',
@@ -54,8 +53,8 @@ export class DishdetailComponent implements OnInit {
 
     this.route.params
       .switchMap((params: Params) => this.dishService.getDish(+params['id']))
-      .subscribe(dish => { this.dish = dish; this.setPrevNext(dish.id); this.originLength = dish.comments.length; });
-
+      .subscribe(dish => { this.dish = dish; this.setPrevNext(dish.id); }, 
+        errmess => this.errMess = <any> errmess);
   }
 
   setPrevNext(dishId: number) {
@@ -88,14 +87,6 @@ export class DishdetailComponent implements OnInit {
     if (!this.commentForm) { return; }
     const form = this.commentForm;
 
-    if (this.commentForm.valid) {
-      this.comment = this.commentForm.value;
-      if (this.dish.comments.length > this.originLength)
-        this.dish.comments[this.originLength] = this.comment;
-      else
-        this.dish.comments.push(this.comment);
-    }
-
     for (const field in this.formErrors) {
       // clear previous error message (if any)
       this.formErrors[field] = '';
@@ -113,13 +104,11 @@ export class DishdetailComponent implements OnInit {
     this.comment = this.commentForm.value;
     this.comment['date'] = Date.now().toString();
     this.dish.comments.push(this.comment);
-    this.originLength += 1;
     this.commentForm.reset({
       author: '',
       rating: 5,
       comment: ''
     });
-    this.dish.comments.pop(); // delete the extra one triggered with onValueChanged. Is there a better way?
 
   }
 

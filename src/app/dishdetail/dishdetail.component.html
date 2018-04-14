@@ -37,12 +37,23 @@
   <div fxFlex="10"></div>
 
   <div fxFlex *ngIf="dish" fxLayout="column">
-    <mat-list size="10">
+    <mat-list>
       <h3> Comments </h3>
       <mat-list-item *ngFor="let comment of dish.comments">
-        <p matLine> {{ comment.comment }} </p>
+        <h4 matLine> {{ comment.comment }} </h4>
         <p matLine> {{ comment.rating }} Stars </p>
-        <p matLine> -- {{ comment.author }} {{ comment.date | date }} </p>
+        <p matLine> 
+          <span> -- {{ comment.author }} {{ comment.date | date }} </span>
+        </p>
+      </mat-list-item>
+    </mat-list>
+    <mat-list *ngIf="commentForm.valid">
+      <mat-list-item>
+        <h4 matLine> {{commentForm.get('comment').value}} </h4>
+        <p matLine>  {{commentForm.get('rating').value}} Stars</p>
+        <p matLine> 
+          <span> -- {{commentForm.get('author').value}} </span> 
+        </p>
       </mat-list-item>
     </mat-list>
     <div fxFlex  class="form-size">
@@ -71,7 +82,11 @@
     </form>
     </div>
   </div>
-  <div [hidden]="dish">
+  <div [hidden]="dish || errMess">
     <mat-spinner></mat-spinner> <h4>Loading ... Please Wait</h4>
+  </div>
+  <div *ngIf="errMess">
+    <h2>Error</h2>
+    <h4>{{errMess}}</h4>
   </div>
 </div>
