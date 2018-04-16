@@ -5,33 +5,31 @@ import { Observable } from 'rxjs/Observable';
 
 import { baseURL } from '../shared/baseurl';
 import { ProcessHttpmsgService } from './process-httpmsg.service';
+import { RestangularModule, Restangular } from 'ngx-restangular';
 
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 
+
 @Injectable()
 export class DishService {
 
-  constructor(private http: Http,
-    private processHttpMsgService: ProcessHttpmsgService) { }
+  constructor(private restangular: Restangular,
+    private processHttpMsgService: ProcessHttpmsgService, 
+    ) { }
 
   getDishes(): Observable<Dish[]> {
-    return this.http.get(baseURL + 'dishes')
-      .map(res => { return this.processHttpMsgService.extractData(res); })
-      .catch(error => { return this.processHttpMsgService.handleError(error); });
+    return this.restangular.all('dishes').getList();
   }
 
   getDish(id: number): Observable<Dish> {
-    return this.http.get(baseURL + 'dishes/' + id)
-      .map(res => { return this.processHttpMsgService.extractData(res); })
-      .catch(error => { return this.processHttpMsgService.handleError(error); });
+    return this.restangular.one('dishes', id).get();
   }
 
   getFeatureDish(): Observable<Dish> {
-    return this.http.get(baseURL + 'dishes?featured=true')
-      .map(res => { return this.processHttpMsgService.extractData(res)[0]; })
-      .catch(error => { return this.processHttpMsgService.handleError(error); });
+    return this.restangular.all('dishes').getList({featured: true})
+      .map(dishes => dishes[0]);
       
   }
 
