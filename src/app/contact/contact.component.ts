@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Feedback, ContactType} from '../shared/feedback';
-import { flyInOut } from '../animations/app.animations';
+import { FeedbackService } from '../services/feedback.service';
+import { flyInOut, expand } from '../animations/app.animations';
+
 
 @Component({
   selector: 'app-contact',
@@ -12,13 +14,19 @@ import { flyInOut } from '../animations/app.animations';
     'style': 'display: block;'
   },
   animations: [
-    flyInOut()
+    flyInOut(),
+    expand()
   ]
 })
 export class ContactComponent implements OnInit {
 
   feedbackForm: FormGroup;
   feedback: Feedback;
+  contactErrMess: string;
+  submitting = false;
+  submitted = false;
+  form = true;
+  
   contactType = ContactType;
   formErrors = {
     'firstname': '',
@@ -48,7 +56,9 @@ export class ContactComponent implements OnInit {
     }
   };
 
-  constructor(private fb: FormBuilder) { // <--- Inject FormBuilder
+  constructor(private fb: FormBuilder, 
+    private feedbackservice: FeedbackService,
+    @Inject('BaseURL') private BaseURL) { // <--- Inject FormBuilder
     this.createForm();
   }
 
@@ -75,7 +85,17 @@ export class ContactComponent implements OnInit {
   onValueChanged(data?: any) {
     if (!this.feedbackForm) { return; }
     const form = this.feedbackForm;
-
+    /*
+    if (this.submitted) {
+      this.submitted = false;
+      this.formErrors = {
+        'firstname': '',
+        'lastname': '',
+        'telnum': '',
+        'email': ''
+      };
+      return;
+    }*/
     for (const field in this.formErrors) {
       // clear previous error message (if any)
       this.formErrors[field] = '';
@@ -90,8 +110,23 @@ export class ContactComponent implements OnInit {
   }
 
   onSubmit() {
-    this.feedback = this.feedbackForm.value;
-    console.log(this.feedback);
+    this.submitting = true;
+    this.form = false;
+
+    // show the submission for 5 seconds.
+    this.feedbackservice.submitFeedback(this.feedbackForm.value)
+      .subscribe(feedback => {
+        this.feedback = feedback;
+        console.log(this.feedback);
+        this.submitting = false;
+        setTimeout(() => {
+          this.form = true;
+          this.feedback = null;
+          // this.submitted = true;
+        }, 5000)}, errmess => { this.feedback = null; this.contactErrMess = errmess});
+    
+    
+
     this.feedbackForm.reset({
       firstname: '',
       lastname: '',
@@ -101,6 +136,7 @@ export class ContactComponent implements OnInit {
       contacttype: 'None',
       message: ''
     });
+
   }
 
 }

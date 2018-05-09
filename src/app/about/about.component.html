@@ -70,8 +70,12 @@
           </div>
         </mat-list>
       </div>
-      <div [hidden]="leaders">
+      <div [hidden]="leaders || leaderErrMess">
         <mat-spinner></mat-spinner> <h4>Loading ... Please Wait</h4>
+      </div>
+      <div *ngIf="leaderErrMess">
+        <h2>Error</h2>
+        <h4>{{leaderErrMess}}</h4>
       </div>
 
 </div>

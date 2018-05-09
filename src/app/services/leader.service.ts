@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Leader } from '../shared/leader';
 
 import { Observable } from 'rxjs/Observable';
+import { RestangularModule, Restangular } from 'ngx-restangular';
 
 import { Http, Response } from '@angular/http';
 import { baseURL } from '../shared/baseurl';
@@ -12,23 +13,20 @@ import 'rxjs/add/operator/map';
 @Injectable()
 export class LeaderService {
 
-  constructor(private http: Http,
+  constructor(private http: Http, private restangular: Restangular,
     private processHttpMsgService: ProcessHttpmsgService) { }
 
   getLeaders(): Observable<Leader[]>{
-    return this.http.get(baseURL + 'leaders')
-      .map(res => { return this.processHttpMsgService.extractData(res); });
+    return this.restangular.all('leaders').getList();
   }
 
   getLeader(id: number): Observable<Leader> {
-    return this.http.get(baseURL + 'leaders/' + id)
-      .map(res => { return this.processHttpMsgService.extractData(res); });
-
+    return this.restangular.one('leaders', id).get();
   }
 
   getFeaturedLeader(): Observable<Leader> {
-    return this.http.get(baseURL + 'leaders?featured=true')
-      .map(res => { return this.processHttpMsgService.extractData(res)[0]; });
+    return this.restangular.all('leaders').getList({featured: true})
+      .map(leaders => leaders[0]);
   }
 
 }
