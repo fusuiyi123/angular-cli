@@ -91,7 +91,7 @@
         <button type="submit" mat-button class="background-primary text-floral-white"
           [disabled]="feedbackForm.invalid">Submit</button>
       </form>
-      <mat-list *ngIf="feedback" [@expand]>
+      <mat-list *ngIf="feedback" [@visibility]="visibility" [@expand]>
         <h3>Your Submission</h3>
         <p matLine>First Name: {{feedback.firstname}}</p>
         <p matLine>Last Name: {{feedback.lastname}}</p>

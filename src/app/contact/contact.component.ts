@@ -2,7 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Feedback, ContactType} from '../shared/feedback';
 import { FeedbackService } from '../services/feedback.service';
-import { flyInOut, expand } from '../animations/app.animations';
+import { flyInOut, expand, visibility } from '../animations/app.animations';
 
 
 @Component({
@@ -15,6 +15,7 @@ import { flyInOut, expand } from '../animations/app.animations';
   },
   animations: [
     flyInOut(),
+    visibility(),
     expand()
   ]
 })
@@ -85,17 +86,7 @@ export class ContactComponent implements OnInit {
   onValueChanged(data?: any) {
     if (!this.feedbackForm) { return; }
     const form = this.feedbackForm;
-    /*
-    if (this.submitted) {
-      this.submitted = false;
-      this.formErrors = {
-        'firstname': '',
-        'lastname': '',
-        'telnum': '',
-        'email': ''
-      };
-      return;
-    }*/
+    
     for (const field in this.formErrors) {
       // clear previous error message (if any)
       this.formErrors[field] = '';
@@ -124,7 +115,6 @@ export class ContactComponent implements OnInit {
           this.feedback = null;
           // this.submitted = true;
         }, 5000)}, errmess => { this.feedback = null; this.contactErrMess = errmess});
-    
     
 
     this.feedbackForm.reset({
