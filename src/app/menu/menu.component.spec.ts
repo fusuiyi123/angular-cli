@@ -17,17 +17,17 @@ import { baseURL } from '../shared/baseurl';
 import { Observable } from 'rxjs/Observable';
 
 describe('MenuComponent', () => {
+  
   let component: MenuComponent;
   let fixture: ComponentFixture<MenuComponent>;
 
-  // mock DishService
-  let dishServiceStub = {
-    getDishes: function(): Observable<Dish[]>{
-      return Observable.of(DISHES);
-    }
-  }
-
   beforeEach(async(() => {
+    // mock DishService
+    let dishServiceStub = {
+      getDishes: function(): Observable<Dish[]>{
+        return Observable.of(DISHES);
+      }
+    };
     TestBed.configureTestingModule({
       imports: [ BrowserAnimationsModule,
         MatButtonModule, MatCheckboxModule, MatDatepickerModule, MatFormFieldModule,
@@ -44,9 +44,10 @@ describe('MenuComponent', () => {
       ]
     })
     .compileComponents();
+
+    let dishService = TestBed.get(DishService);
   }));
 
-  let dishService = TestBed.get(DishService);
 
   beforeEach(() => {
     fixture = TestBed.createComponent(MenuComponent);
